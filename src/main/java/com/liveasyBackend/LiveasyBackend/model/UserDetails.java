@@ -20,7 +20,7 @@ public class UserDetails {
     String email;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     String password;
-
+    String profileUrl;
     int totalWeight;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "userDetails")

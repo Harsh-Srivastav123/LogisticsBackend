@@ -5,6 +5,8 @@ import com.liveasyBackend.LiveasyBackend.model.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserDetailsService {
     @Autowired
@@ -26,5 +28,9 @@ public class UserDetailsService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public List<UserDetails> getAllUserByWeight(int weight) {
+        return userDAO.findUserByWeight(weight);
     }
 }

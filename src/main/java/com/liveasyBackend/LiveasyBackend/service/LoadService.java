@@ -1,6 +1,6 @@
 package com.liveasyBackend.LiveasyBackend.service;
 
-import com.liveasyBackend.LiveasyBackend.dao.LaodDAO;
+import com.liveasyBackend.LiveasyBackend.dao.LoadDAO;
 import com.liveasyBackend.LiveasyBackend.dao.UserDetailsDAO;
 import com.liveasyBackend.LiveasyBackend.model.Loads;
 import com.liveasyBackend.LiveasyBackend.model.UserDetails;
@@ -14,7 +14,7 @@ import java.util.Optional;
 public class LoadService {
 
     @Autowired
-    LaodDAO loadDAO;
+    LoadDAO loadDAO;
     @Autowired
     UserDetailsDAO userDAO;
 
@@ -69,5 +69,18 @@ public class LoadService {
             e.printStackTrace();
         }
         return false ;
+    }
+
+
+    public List<Loads> getAllLoadsWithLoadingPoint(String loadingPoint) {
+        return loadDAO.findByLoadingPoint(loadingPoint);
+    }
+
+    public List<Loads> getAllLoadsWithUnloadingPoint(String unloadingPoint) {
+        return loadDAO.findByUnloadingPoint(unloadingPoint);
+    }
+
+    public List<Loads> getAllLoadsWithProductType(String productType) {
+        return loadDAO.findByProductType(productType);
     }
 }

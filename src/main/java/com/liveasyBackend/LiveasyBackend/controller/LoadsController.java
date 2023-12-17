@@ -1,6 +1,7 @@
 package com.liveasyBackend.LiveasyBackend.controller;
 
 import com.liveasyBackend.LiveasyBackend.model.Loads;
+import com.liveasyBackend.LiveasyBackend.model.UserLoads;
 import com.liveasyBackend.LiveasyBackend.service.LoadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,17 +17,29 @@ import java.util.Optional;
 public class LoadsController {
     @Autowired
     LoadService loadService;
-    @PostMapping("/load/{userId}")
-    public ResponseEntity<String> payload( @RequestBody Loads loads,
-    @PathVariable String userId){
+    public  record  UserMessage(String userId, String message){}
+    @PostMapping("/load")
+    public ResponseEntity<String> payload( @RequestBody Loads loads){
         try{
-          loadService.addLoad(loads,userId);
-          return new ResponseEntity<>("loads details added successfully ", HttpStatus.OK);
+            loadService.addLoad(loads,null);
+            return new ResponseEntity<>("loads details added successfully ", HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
         }
         return new ResponseEntity<>("unable to load",HttpStatus.EXPECTATION_FAILED);
+    }
+    @PostMapping("/userLoad")
+    public ResponseEntity<UserMessage> UserPayload(@RequestBody UserLoads userLoads){
+        try{
+            loadService.addLoad(userLoads.getLoads(),userLoads.getUser_Id());
+            return new ResponseEntity<>(new UserMessage(userLoads.getUser_Id(),"Loads successfully added in User Account"), HttpStatus.OK);
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new UserMessage(userLoads.getUser_Id(), "Unable to add Load in user Account "),HttpStatus.EXPECTATION_FAILED);
     }
     @GetMapping("/allLoad")
     public ResponseEntity<List<Loads>> getAllLoads(){
@@ -62,5 +75,34 @@ public class LoadsController {
         }
         return new ResponseEntity<>("Unable to delete Load",HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/loadingPoint/{loadingPoint}")
+    public ResponseEntity<List<Loads>> getLoadsWithLoadingPoint(@PathVariable String loadingPoint){
+        List<Loads> allLoads=loadService.getAllLoadsWithLoadingPoint(loadingPoint);
+        if(allLoads!=null){
+            return new ResponseEntity<>(allLoads,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(allLoads,HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/unloadingPoint/{unloadingPoint}")
+    public ResponseEntity<List<Loads>> getLoadsWithUnloadingPoint(@PathVariable String unloadingPoint){
+        List<Loads> allLoads=loadService.getAllLoadsWithUnloadingPoint(unloadingPoint);
+        if(allLoads!=null){
+            return new ResponseEntity<>(allLoads,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(allLoads,HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/productType/{productType}")
+    public ResponseEntity<List<Loads>> getLoadsWithProductType(@PathVariable String productType){
+        List<Loads> allLoads=loadService.getAllLoadsWithProductType(productType);
+        if(allLoads!=null){
+            return new ResponseEntity<>(allLoads,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(allLoads,HttpStatus.EXPECTATION_FAILED);
+    }
+
+
 
 }

@@ -18,16 +18,17 @@ public class LoadService {
     @Autowired
     UserDetailsDAO userDAO;
 
-    public void addLoad(Loads loads,String userId) {
+    public Loads addLoad(Loads loads,String userId) {
 
 
-        if(userDAO.existsById(userId)){
+        if(userId!=null && userDAO.existsById(userId)){
             loads.setUserDetails(userDAO.getReferenceById(userId));
             UserDetails user=userDAO.getReferenceById(userId);
             user.setTotalWeight(user.getTotalWeight()+loads.getWeight());
             user.getPreviousLoads().add(loads);
             userDAO.save(user);
         }
+        return loadDAO.save(loads);
 
     }
     public List<Loads> getAllLoads(){

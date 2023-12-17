@@ -15,31 +15,28 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/loads")
 public class LoadsController {
+    public record LoadMessage(String shipped_id,String message){};
     @Autowired
     LoadService loadService;
-    public  record  UserMessage(String userId, String message){}
+    public  record  UserMessage(String userId, String shipped_Id,String message){};
     @PostMapping("/load")
-    public ResponseEntity<String> payload( @RequestBody Loads loads){
-        try{
-            loadService.addLoad(loads,null);
-            return new ResponseEntity<>("loads details added successfully ", HttpStatus.OK);
+    public ResponseEntity<LoadMessage> payload( @RequestBody Loads loads){
+
+        Loads loads1=loadService.addLoad(loads,null);
+        if(loads1!=null){
+            return new ResponseEntity<>(new LoadMessage(loads1.getShipperId(),"Load details added successfully"),HttpStatus.OK);
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>("unable to load",HttpStatus.EXPECTATION_FAILED);
+        return new ResponseEntity<>(new LoadMessage(null,"unable to load"),HttpStatus.EXPECTATION_FAILED);
     }
     @PostMapping("/userLoad")
     public ResponseEntity<UserMessage> UserPayload(@RequestBody UserLoads userLoads){
-        try{
-            loadService.addLoad(userLoads.getLoads(),userLoads.getUser_Id());
-            return new ResponseEntity<>(new UserMessage(userLoads.getUser_Id(),"Loads successfully added in User Account"), HttpStatus.OK);
+        Loads loads=loadService.addLoad(userLoads.getLoads(),userLoads.getUser_Id());
+
+        if(loads!=null){
+            return new ResponseEntity<>(new UserMessage(userLoads.getUser_Id(),loads.getShipperId(),"Loads successfully added in User Account"), HttpStatus.OK);
 
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(new UserMessage(userLoads.getUser_Id(), "Unable to add Load in user Account "),HttpStatus.EXPECTATION_FAILED);
+        return new ResponseEntity<>(new UserMessage(userLoads.getUser_Id(), null,"Unable to add Load in user Account "),HttpStatus.EXPECTATION_FAILED);
     }
     @GetMapping("/allLoad")
     public ResponseEntity<List<Loads>> getAllLoads(){
@@ -69,11 +66,11 @@ public class LoadsController {
     }
 
     @DeleteMapping("deleteLoad/{id}")
-    public ResponseEntity<String> deleteLoad(@PathVariable String id){
+    public ResponseEntity<LoadMessage> deleteLoad(@PathVariable String id){
         if(loadService.deleteLoad(id)){
-            return new ResponseEntity<>("Deleted Successfully",HttpStatus.OK);
+            return new ResponseEntity<>(new LoadMessage(id,"Deleted Successfully"),HttpStatus.OK);
         }
-        return new ResponseEntity<>("Unable to delete Load",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new LoadMessage(id,"Unable to delete Load"),HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/loadingPoint/{loadingPoint}")

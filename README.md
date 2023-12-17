@@ -52,6 +52,9 @@ Before you begin, make sure you have the following installed:
    spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
    spring.servlet.multipart.max-file-size=10MB
    spring.servlet.multipart.max-request-size=10MB
+
+
+   
 3. Configure Cloudinary Configuration
    ```shell
      config.put("cloud_name","");
@@ -61,12 +64,6 @@ Before you begin, make sure you have the following installed:
 
 ### Swagger API Documentation
 QuizApp provides Swagger for easy API documentation and testing. You can access the Swagger UI to interact with the APIs as follows:
- ```shell
-   http://localhost:8080/swagger-ui.html
+  ```bash
+        http://localhost:8080/swagger-ui.html
 
-
-Feel free to explore the API documentation for detailed information on available endpoints and operations.
-
-Now you're ready to run and explore the Liveasy Logistics Backend!
-
-Copy code

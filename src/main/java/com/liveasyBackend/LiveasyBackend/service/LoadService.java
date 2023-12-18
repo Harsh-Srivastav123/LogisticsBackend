@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,59 +21,73 @@ public class LoadService {
     @Autowired
     UserDetailsDAO userDAO;
 
-    public Loads addLoad(Loads loads,String userId) {
-
-
-        if(userId!=null && userDAO.existsById(userId)){
-            loads.setUserDetails(userDAO.getReferenceById(userId));
-            UserDetails user=userDAO.getReferenceById(userId);
-            user.setTotalWeight(user.getTotalWeight()+loads.getWeight());
-            user.getPreviousLoads().add(loads);
-            userDAO.save(user);
-        }
-
+    public Loads addLoad(Loads loads) {
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         loads.setDate(formatter.format(new Date()));
+//        if(userDAO.existsById(userId)){
+//            System.out.println("reach here");
+//            loads.setUserDetails(userDAO.getReferenceById(userId));
+//            UserDetails user=userDAO.getReferenceById(userId);
+//            user.setTotalWeight(user.getTotalWeight()+loads.getWeight());
+//            user.getPreviousLoads().add(loads);
+//            userDAO.save(user);
+//            return loadDAO.save(loads).getShipperId();
+//        }
+//        return loadDAO.save(loads).getShipperId();
+
+
         return loadDAO.save(loads);
 
     }
-    public List<Loads> getAllLoads(){
 
-        try{
+    public Loads addUserLoad(Loads loads, String userId) {
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        loads.setDate(formatter.format(new Date()));
+        System.out.println("reach here");
+        loads.setUserDetails(userDAO.getReferenceById(userId));
+        UserDetails user = userDAO.getReferenceById(userId);
+        user.setTotalWeight(user.getTotalWeight() + loads.getWeight());
+        user.getPreviousLoads().add(loads);
+        userDAO.save(user);
+        return loadDAO.save(loads);
+    }
+
+    public List<Loads> getAllLoads() {
+
+        try {
             return loadDAO.findAll();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
     public Optional<Loads> getLoadDetails(String id) {
-        try{
+        try {
             return loadDAO.findById(id);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-    public boolean isExists(String id){
-        Optional<Loads> loads=loadDAO.findById(id);
-        if(loads.isEmpty()){
+
+    public boolean isExists(String id) {
+        Optional<Loads> loads = loadDAO.findById(id);
+        if (loads.isEmpty()) {
             return false;
+        } else {
+            return loadDAO.existsById(loads.get().getShipperId());
         }
-       return true;
     }
 
     public boolean deleteLoad(String id) {
         try {
             loadDAO.delete(loadDAO.getReferenceById(id));
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return false ;
+        return false;
     }
 
 
@@ -89,5 +101,15 @@ public class LoadService {
 
     public List<Loads> getAllLoadsWithProductType(String productType) {
         return loadDAO.findByProductType(productType);
+    }
+
+    public boolean updateLoad(Loads load) {
+        try {
+            loadDAO.save(load);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

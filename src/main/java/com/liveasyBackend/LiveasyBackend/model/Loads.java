@@ -38,6 +38,7 @@ public class Loads {
 //    @Transient
 //    String user_Id;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "userDetails_Id")
     UserDetails userDetails;
 

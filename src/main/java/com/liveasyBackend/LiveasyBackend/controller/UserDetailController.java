@@ -67,7 +67,7 @@ public class UserDetailController {
          }
         return new ResponseEntity<>(null,HttpStatus.EXPECTATION_FAILED);
     }
-    @GetMapping("/deleteUser/{userId}")
+    @DeleteMapping("/deleteUser/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable String userId){
         if(userService.deleteUser(userId)){
             return new ResponseEntity<>("user deleted successfully "+userId,HttpStatus.OK);

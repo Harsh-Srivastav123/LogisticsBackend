@@ -48,21 +48,17 @@ public class LoadsController {
         return new ResponseEntity<>(loadService.getLoadDetails(id),HttpStatus.OK);
     }
     @PutMapping("updateLoad")
-    public ResponseEntity<String> updateLoad(@RequestBody Loads load){
+    public ResponseEntity<LoadMessage> updateLoad(@RequestBody Loads load){
         if(load.getShipperId()==null){
-            return  new ResponseEntity<>("Shipping Id is missing",HttpStatus.BAD_REQUEST);
+            return  new ResponseEntity<>(new LoadMessage(null,"Shipping Id is missing"),HttpStatus.BAD_REQUEST);
         }
         else if(!loadService.isExists(load.getShipperId())) {
-            return new ResponseEntity<>("Shipment doesn't exists",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new LoadMessage(load.getShipperId(),"Shipment doesn't exists"),HttpStatus.BAD_REQUEST);
         }
-        try{
-            loadService.addLoad(load,null);
-            return new ResponseEntity<>("Shipment Updated Successfully",HttpStatus.OK);
+        else {
+            new ResponseEntity<>(new LoadMessage(load.getShipperId(),"Shipment Updated Successfully"),HttpStatus.OK);
         }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>("Failed to update",HttpStatus.EXPECTATION_FAILED);
+        return new ResponseEntity<>(new LoadMessage(load.getShipperId(), "Failed to update"),HttpStatus.EXPECTATION_FAILED);
     }
 
     @DeleteMapping("deleteLoad/{id}")
@@ -99,7 +95,5 @@ public class LoadsController {
         }
         return new ResponseEntity<>(allLoads,HttpStatus.EXPECTATION_FAILED);
     }
-
-
 
 }

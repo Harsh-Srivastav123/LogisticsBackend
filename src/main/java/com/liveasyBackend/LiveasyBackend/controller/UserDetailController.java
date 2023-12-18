@@ -28,9 +28,9 @@ public class UserDetailController {
 
     @Autowired
     CloudinaryService cloudinaryService;
-
+    public record  UserCreation(String user_Id, String profileUrl,String message){};
     @PostMapping(path = "/createUser", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<String> createUser(@RequestParam("user") String User,
+    public ResponseEntity<UserCreation> createUser(@RequestParam("user") String User,
                                              @RequestPart("image") MultipartFile file) {
 
         Map data = new HashMap();
@@ -50,12 +50,12 @@ public class UserDetailController {
         try {
             userDetails.setProfileUrl(data.get("url").toString());
             UserDetails newUser=userService.createUser(userDetails);
-            return new ResponseEntity<>("User Created Successfully "+newUser.getUserDetails_Id(), HttpStatus.OK);
+            return new ResponseEntity<>(new UserCreation(newUser.getUserDetails_Id(),data.get("url").toString(),"User Created Successfully "), HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
         }
-        return new ResponseEntity<>("Unable to Create User",HttpStatus.EXPECTATION_FAILED);
+        return new ResponseEntity<>(new UserCreation(null,data.get("url").toString(),"Unable to Create User"),HttpStatus.EXPECTATION_FAILED);
     }
     @GetMapping("/getUser/{user_Id}")
     public ResponseEntity<UserDetails> getUser(@PathVariable String user_Id){
@@ -74,6 +74,9 @@ public class UserDetailController {
         }
         return new ResponseEntity<>("unable delete User "+userId,HttpStatus.EXPECTATION_FAILED);
     }
+
+    //get list of all user having weight equal or greater
+
     @GetMapping("/weight/{weight}")
     public ResponseEntity<List<UserDetails>> userWeight(@PathVariable int weight){
         List<UserDetails> allUser=userService.getAllUserByWeight(weight);

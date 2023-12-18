@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.apachecommons.CommonsLog;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import java.util.UUID;
@@ -33,11 +34,10 @@ public class Loads {
     @Column(nullable = false)
     int weight;
     String Comment;
-    Date date=getDate();
+    String date;
 //    @Transient
 //    String user_Id;
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "userDetails_Id")
     UserDetails userDetails;
 

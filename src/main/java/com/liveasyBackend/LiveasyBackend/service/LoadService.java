@@ -7,6 +7,11 @@ import com.liveasyBackend.LiveasyBackend.model.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +33,9 @@ public class LoadService {
             user.getPreviousLoads().add(loads);
             userDAO.save(user);
         }
+
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        loads.setDate(formatter.format(new Date()));
         return loadDAO.save(loads);
 
     }
@@ -56,9 +64,7 @@ public class LoadService {
         if(loads.isEmpty()){
             return false;
         }
-        else {
-            return loadDAO.existsById(loads.get().getShipperId());
-        }
+       return true;
     }
 
     public boolean deleteLoad(String id) {

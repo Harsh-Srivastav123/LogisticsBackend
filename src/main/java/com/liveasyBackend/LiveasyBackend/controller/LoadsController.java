@@ -22,7 +22,7 @@ public class LoadsController {
     LoadService loadService;
     @Autowired
     UserDetailsService userDetailsService;
-    public  record  UserMessage(String userId, String shipped_Id,String message){};
+    public  record  UserMessage(String userId, String shipperId,String message){};
     @PostMapping("/load")
     public ResponseEntity<LoadMessage> payload( @RequestBody Loads loads){
 

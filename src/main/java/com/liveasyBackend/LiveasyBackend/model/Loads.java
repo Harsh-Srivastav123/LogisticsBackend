@@ -19,7 +19,8 @@ import java.util.UUID;
 @Entity
 public class Loads {
     @Id
-    String shipperId= UUID.randomUUID().toString();
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String shipperId;
     @Column(nullable = false)
 
     String loadingPoint;
